@@ -13,8 +13,8 @@ router.get('/:userId', (req, res ) =>{
 })
 
 router.get('/', (req, res ) =>{
-    const name = req.query.name;    
-    res.send({ name })
+    const {name, email} = req.query;    
+    res.send({ name, email })
 })
 
 router.put('/:userId', (req, res ) =>{
