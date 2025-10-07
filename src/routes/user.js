@@ -1,11 +1,6 @@
-const express = require('express')
+const express = require('express');
+const  userService  = require('../services/user');
 const router = express.Router();
-
-router.post('/', (req, res) => {
-    const { name, email, password } = req.body;
-    res.send({name, email, password : "****"})
-    // res.send(`Los datos que enviaste son ${name} y ${email} y al contraseña es ${password}`)    
-})
 
 router.get('/:userId', (req, res ) =>{
     const userId = req.params.userId;
@@ -17,6 +12,21 @@ router.get('/', (req, res ) =>{
     res.send({ name, email })
 })
 
+router.post('/', async (req, res) => {
+    const { nombre, apellido, email, password } = req.body;
+    try {
+        const newUser = await userService.createUser({
+            nombre, 
+            apellido, 
+            email, 
+            password
+        });
+        res.status(201).json(newUser)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
 router.put('/:userId', (req, res ) =>{
     const userId = req.params.userId;
     const { name, email, password } = req.body;
@@ -26,7 +36,7 @@ router.put('/:userId', (req, res ) =>{
 
 router.delete('/:userId', (req, res ) =>{
     const userId = req.params.userId;
-    res.send(`Adios usuario: ${userId}`)
+    res.send(`El usuario con el id: ${userId} fue eliminado correctamente`)
 })
 
 module.exports = router;

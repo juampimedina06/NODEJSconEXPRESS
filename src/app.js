@@ -1,16 +1,21 @@
-const express = require('express');
-const port = 8080;
-const bodyParser = require('body-parser');
-const { logging } = require('./middleware');
-const { userRouter } = require('./routes')
+const express = require("express");
+const bodyParser = require("body-parser");
+const { logging } = require("./middleware");
+const { userRouter } = require("./routes");
+const { initializeBD } = require("./config/dbConfig");
+
+const PORT = 8080;
+
 const app = express();
 
 app.use(bodyParser.json());
 app.use(logging);
 
-app.use('/user', userRouter)
+app.use("/user", userRouter);
 
-app.listen(port, () => console.log(`Escuchando peticiones en el puerto ${port}!`))
-
-
-//DESCARGUE body-parser (sirve para decirme que es lo que viene en el cuerpo de la peticion)
+(async () => {
+   initializeBD();
+  app.listen(PORT, () => {
+    console.log(`Hello world! Este es nuestro primer server. Escuchando peticiones en el puerto: ${PORT}`);
+  });
+})();
