@@ -2,14 +2,24 @@ const express = require('express');
 const  userService  = require('../services/user');
 const router = express.Router();
 
-router.get('/:userId', (req, res ) =>{
+router.get('/:userId', async (req, res ) =>{
     const userId = req.params.userId;
-    res.send({ userId })
+    try {
+        const user = await userService.getUser(userId);
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 })
 
-router.get('/', (req, res ) =>{
-    const {name, email} = req.query;    
-    res.send({ name, email })
+router.get('/', async (req, res ) =>{
+    const {nombre, email} = req.query; 
+    try {
+        const user = await userService.getUsers({nombre, email});
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }  
 })
 
 router.post('/', async (req, res) => {
@@ -27,16 +37,25 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.put('/:userId', (req, res ) =>{
+router.put('/:userId', async (req, res ) =>{
     const userId = req.params.userId;
-    const { name, email, password } = req.body;
-
-    res.send({id: userId, name,email, password : "****"})
+   const { nombre, apellido, email, password } = req.body;
+    try {
+        const newUser = await userService.updateUser(userId, { nombre, apellido, email, password });
+        res.status(200).json(newUser)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 })
 
-router.delete('/:userId', (req, res ) =>{
+router.delete('/:userId', async (req, res ) =>{
     const userId = req.params.userId;
-    res.send(`El usuario con el id: ${userId} fue eliminado correctamente`)
+    try {
+        const user = await userService.deleteUser(userId);
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 })
 
 module.exports = router;
